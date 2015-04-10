@@ -1,0 +1,14 @@
+modprobe dm-multipath non host
+
+
+cmd line
+docker run --rm --privileged --net=host -ti -e 'container=docker' -v /proc/modules:/proc/modules -v /var/lib/libvirt/:/var/lib/libvirt/ -v /sys/fs/cgroup:/sys/fs/cgroup:rw vdsmc
+
+RUN systemctl enable virtlockd
+
+virsh --connect qemu+tcp://localhost/system list --all
+
+docker inspect --format {{.State.Pid}} <container_name_or_ID>
+
+ sudo nsenter  --mount --uts --net --pid --ipc --target
+
