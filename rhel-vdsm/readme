@@ -14,6 +14,6 @@ Testing
 		virsh --connect qemu+tcp://<docker host>/system list --all
 
 Connectiong to docker container
-
 	docker inspect --format {{.State.Pid}} <container_name_or_ID>
- 	nsenter  --mount --uts --net --pid --ipc --target <container pid from previos command>
+	$(docker inspect --format {{.State.Pid}} $(docker ps | grep vdsmc | awk '{print $1}'))
+ 	nsenter  --mount --uts --net --pid --ipc --target $(docker inspect --format {{.State.Pid}} $(docker ps | grep vdsmc | awk '{print $1}'))
