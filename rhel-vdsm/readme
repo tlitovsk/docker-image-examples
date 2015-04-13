@@ -1,14 +1,19 @@
-modprobe dm-multipath non host
+Starting the container
+
+On the RHEL 7 Host :
+Running
+	modprobe dm-multipath non host
+	docker run --rm --privileged --net=host -ti -e 'container=docker' -v /proc/modules:/proc/modules -v /var/lib/libvirt/:/var/lib/libvirt/ -v /sys/fs/cgroup:/sys/fs/cgroup:rw vdsmc
+
+Building
+	docker build -t vdsmc .
 
 
-cmd line
-docker run --rm --privileged --net=host -ti -e 'container=docker' -v /proc/modules:/proc/modules -v /var/lib/libvirt/:/var/lib/libvirt/ -v /sys/fs/cgroup:/sys/fs/cgroup:rw vdsmc
+Testing
+	Checking libvirt
+		virsh --connect qemu+tcp://<docker host>/system list --all
 
-RUN systemctl enable virtlockd
+Connectiong to docker container
 
-virsh --connect qemu+tcp://localhost/system list --all
-
-docker inspect --format {{.State.Pid}} <container_name_or_ID>
-
- sudo nsenter  --mount --uts --net --pid --ipc --target
-
+	docker inspect --format {{.State.Pid}} <container_name_or_ID>
+ 	nsenter  --mount --uts --net --pid --ipc --target <container pid from previos command>

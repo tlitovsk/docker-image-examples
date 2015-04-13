@@ -5,8 +5,8 @@ RUN yum -y update && yum clean all
 RUN yum -y install yum-utils
 RUN yum-config-manager --enable rhel-7-server-extras-rpms
 RUN yum-config-manager --enable rhel-7-server-optional-rpms
-RUN yum -y localinstall http://resources.ovirt.org/pub/yum-repo/ovirt-release35.rpm
-RUN yum -y install vdsm vdsm-cli net-tools && yum clean all;
+RUN yum-config-manager --enable rhel-7-server-rhev-mgmt-agent-rpms
+RUN yum -y install libvirt-daemon-driver-* libvirt-daemon libvirt-daemon-kvm qemu-kvm vdsm vdsm-cli net-tools kdump && yum clean all;
 RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done);
 RUN rm -f /lib/systemd/system/multi-user.target.wants/*;
 RUN rm -f /etc/systemd/system/*.wants/*;
@@ -32,7 +32,6 @@ RUN mkdir -p /var/lib/libvirt/images/
 # Edit the service file which includes ExecStartPost to chmod /dev/kvm
 RUN sed -i "/Service/a ExecStartPost=\/bin\/chmod 666 /dev/kvm" /usr/lib/systemd/system/libvirtd.service
 EXPOSE 16509
-RUN systemctl enable virtlockd
 RUN systemctl enable libvirtd
 
 #kill the modprobe , you cant from container
@@ -45,6 +44,8 @@ RUN vdsm-tool configure --force
 EXPOSE 54321
 EXPOSE 4044
 RUN systemctl enable vdsmd
+
+RUN systemctl enable kdump
 
 VOLUME [ "/sys/fs/cgroup" ]
 CMD ["/usr/sbin/init"]
