@@ -4,6 +4,12 @@ On the RHEL 7 Host :
 Running
 	modprobe dm-multipath;
 	modprobe softdog;
+	modprobe ebtables
+	modprobe ebtable_filter
+	modprobe ebtable_ip
+	modprobe ebt_ip
+	modprobe ebt_pkttype
+
 	docker run --rm --privileged --net=host -ti -e 'container=docker' -v /proc/modules:/proc/modules -v /sys/fs/cgroup:/sys/fs/cgroup:rw docker;
 
 Building
