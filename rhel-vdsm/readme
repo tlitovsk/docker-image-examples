@@ -2,8 +2,9 @@ Starting the container
 
 On the RHEL 7 Host :
 Running
-	modprobe dm-multipath non host
-	docker run --rm --privileged --net=host -ti -e 'container=docker' -v /proc/modules:/proc/modules -v /var/lib/libvirt/:/var/lib/libvirt/ -v /sys/fs/cgroup:/sys/fs/cgroup:rw vdsmc
+	modprobe dm-multipath;
+	modprobe softdog;
+	docker run --rm --privileged --net=host -ti -e 'container=docker' -v /proc/modules:/proc/modules -v /sys/fs/cgroup:/sys/fs/cgroup:rw docker;
 
 Building
 	docker build -t vdsmc .
@@ -16,4 +17,4 @@ Testing
 Connectiong to docker container
 	docker inspect --format {{.State.Pid}} <container_name_or_ID>
 	$(docker inspect --format {{.State.Pid}} $(docker ps | grep vdsmc | awk '{print $1}'))
- 	nsenter  --mount --uts --net --pid --ipc --target $(docker inspect --format {{.State.Pid}} $(docker ps | grep vdsmc | awk '{print $1}'))
+ 	nsenter  --mount --uts --net --pid --ipc --target $(docker inspect --format {{.State.Pid}} $(docker ps | grep docker | awk '{print $1}'))

@@ -56,5 +56,12 @@ RUN systemctl enable vdsmd
 #debug extras
 RUN yum -y install vdsm-cli net-tools && yum clean all;
 
+#vdsm net hacks
+RUN echo "BOOTPROTO=dhcp" > /etc/sysconfig//network-scripts/ifcfg-rhevm
+
+#move up - debug
+#RUN yum install -y ebtables && yum clean all;
+#RUN yum install -y strace && yum clean all;
+
 VOLUME [ "/sys/fs/cgroup" ]
 CMD ["/usr/sbin/init"]
