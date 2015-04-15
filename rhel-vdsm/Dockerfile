@@ -6,14 +6,6 @@ RUN yum -y install yum-utils
 RUN yum-config-manager --enable rhel-7-server-extras-rpms
 RUN yum-config-manager --enable rhel-7-server-optional-rpms
 RUN yum-config-manager --enable rhel-7-server-rhev-mgmt-agent-rpms
-RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done);
-RUN rm -f /lib/systemd/system/multi-user.target.wants/*;
-RUN rm -f /etc/systemd/system/*.wants/*;
-RUN rm -f /lib/systemd/system/local-fs.target.wants/*;
-RUN rm -f /lib/systemd/system/sockets.target.wants/*udev*;
-RUN rm -f /lib/systemd/system/sockets.target.wants/*initctl*;
-RUN rm -f /lib/systemd/system/basic.target.wants/*;
-RUN rm -f /lib/systemd/system/anaconda.target.wants/*;
 
 #start libvirt install
 RUN yum -y install libvirt-daemon-driver-* libvirt-daemon libvirt-daemon-kvm qemu-kvm && yum clean all;
@@ -51,17 +43,14 @@ RUN vdsm-tool configure --force
 EXPOSE 54321
 EXPOSE 4044
 RUN systemctl enable vdsmd
-#vdsm installed
-
-#debug extras
-RUN yum -y install vdsm-cli net-tools && yum clean all;
 
 #vdsm net hacks
 RUN echo "BOOTPROTO=dhcp" > /etc/sysconfig//network-scripts/ifcfg-rhevm
-
+#vdsm installed
 #move up - debug
 #RUN yum install -y ebtables && yum clean all;
 #RUN yum install -y strace && yum clean all;
+#RUN yum -y install vdsm-cli net-tools && yum clean all;
 
 VOLUME [ "/sys/fs/cgroup" ]
 CMD ["/usr/sbin/init"]
