@@ -9,7 +9,7 @@ Running
 	modprobe ebt_ip;
 	modprobe ebt_pkttype;
 
-	docker run --rm --privileged --net=host -ti -e 'container=docker' -v /sys/fs/cgroup:/sys/fs/cgroup:rw docker;
+	docker run -d --privileged --net=host -ti -e 'container=docker' -v /sys/fs/cgroup:/sys/fs/cgroup:rw docker;
 
 Building
 	docker build -t vdsmc .
