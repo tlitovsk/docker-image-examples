@@ -1,6 +1,11 @@
 Starting the container
 
 On the RHEL 7 Host :
+Setting rhevm network
+	nmcli connection add type bridge ifname rhevm
+	nmcli con add type bridge-slave ifname ens3 master bridge-rhevm
+
+
 Running
 	modprobe dm-multipath;
 	modprobe softdog;
@@ -8,10 +13,12 @@ Running
 	modprobe ebtable_filter;
 	modprobe ebt_ip;
 	modprobe ebt_pkttype;
-
-	docker run -d --privileged --net=host -ti -e 'container=docker' -v /sys/fs/cgroup:/sys/fs/cgroup:rw docker;
+	modprobe iscsi_tcp;
+	docker run -d --privileged --net=host -ti -e 'container=docker' -v /sys/fs/cgroup:/sys/fs/cgroup:rw vdsmc;
 
 Building
+	have a registered rhn
+	subscription-manager register --username <username> --password <password> --auto-attach
 	docker build -t vdsmc .
 
 
@@ -20,6 +27,6 @@ Testing
 		virsh --connect qemu+tcp://<docker host>/system list --all
 
 Connectiong to docker container
-	docker inspect --format {{.State.Pid}} <container_name_or_ID>
-	$(docker inspect --format {{.State.Pid}} $(docker ps | grep vdsmc | awk '{print $1}'))
- 	nsenter  --mount --uts --net --pid --ipc --target $(docker inspect --format {{.State.Pid}} $(docker ps | grep docker | awk '{print $1}'))
+	#docker inspect --format {{.State.Pid}} <container_name_or_ID>
+	#$(docker inspect --format {{.State.Pid}} $(docker ps | grep vdsmc | awk '{print $1}'))
+ 	nsenter  --mount --uts --net --pid --ipc --target $(docker inspect --format {{.State.Pid}} $(docker ps | grep vdsmc | awk '{print $1}'))
