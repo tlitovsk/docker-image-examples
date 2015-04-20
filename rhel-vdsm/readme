@@ -7,14 +7,16 @@ Setting rhevm network
 
 
 Running
-	modprobe dm-multipath;
-	modprobe softdog;
-	modprobe ebtables;
-	modprobe ebtable_filter;
-	modprobe ebt_ip;
-	modprobe ebt_pkttype;
-	modprobe iscsi_tcp;
-	docker run -d --privileged --net=host -ti -e 'container=docker' -v /sys/fs/cgroup:/sys/fs/cgroup:rw vdsmc;
+		modprobe dm-multipath;
+		modprobe dm_mirror;
+		modprobe dm_snapshot;
+		modprobe softdog;
+		modprobe ebtables;
+		modprobe ebtable_filter;
+		modprobe ebt_ip;
+		modprobe ebt_pkttype;
+		modprobe iscsi_tcp;
+		docker run -d --privileged --net=host -ti -e 'container=docker' -v /sys/fs/cgroup:/sys/fs/cgroup:rw ovirt;
 
 Building
 	have a registered rhn
@@ -29,4 +31,4 @@ Testing
 Connectiong to docker container
 	#docker inspect --format {{.State.Pid}} <container_name_or_ID>
 	#$(docker inspect --format {{.State.Pid}} $(docker ps | grep vdsmc | awk '{print $1}'))
- 	nsenter  --mount --uts --net --pid --ipc --target $(docker inspect --format {{.State.Pid}} $(docker ps | grep vdsmc | awk '{print $1}'))
+ 	nsenter  --mount --uts --net --pid --ipc --target $(docker inspect --format {{.State.Pid}} $(docker ps | grep ovirt | awk '{print $1}'))
